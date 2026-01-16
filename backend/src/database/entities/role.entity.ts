@@ -1,0 +1,29 @@
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { User } from './user.entity';
+
+@Entity({ name: 'roles' })
+export class Role {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ type: 'varchar', length: 50 })
+  name: string;
+
+  @Column({ type: 'text' })
+  description: string;
+
+  @CreateDateColumn({ name: 'created_at' })
+  created_at: Date;
+
+  @CreateDateColumn({ name: 'updated_at' })
+  updated_at: Date;
+
+  @OneToMany(() => User, (user) => user.role)
+  users: User[];
+}
