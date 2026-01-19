@@ -19,7 +19,7 @@ export class Refund {
   amount: number;
 
   @Column({ type: 'uuid', name: 'payment_method_id', nullable: true })
-  payment_method_id: string | null;
+  payment_method_id?: string | null;
 
   @Column({ type: 'varchar', length: 120, name: 'reference_number' })
   reference_number: string;

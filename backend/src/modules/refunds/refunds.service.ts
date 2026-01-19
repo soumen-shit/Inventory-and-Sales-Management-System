@@ -55,7 +55,7 @@ export class RefundsService {
     const refund = this.refundRepo.create({
       refund_date: new Date(createRefundDto.refund_date),
       amount: createRefundDto.amount,
-      payment_method_id: createRefundDto.payment_method_id || null,
+      payment_method_id: createRefundDto.payment_method_id || undefined,
       reference_number: createRefundDto.reference_number,
       status: createRefundDto.status,
       returnOrder,

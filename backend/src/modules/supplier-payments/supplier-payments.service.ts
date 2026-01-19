@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { SupplierPayment } from 'src/database/entities/supplier-payment.entity';
 import { Supplier } from 'src/database/entities/supplier.entity';
 import { PurchaseOrder } from 'src/database/entities/purchase-order.entity';
+import { SupplierPaymentStatus } from 'src/enums/supplier-payment-status.enum';
 import { Repository } from 'typeorm';
 import { CreateSupplierPaymentDto } from './dto/create-supplier-payment.dto';
 
@@ -54,9 +55,9 @@ export class SupplierPaymentsService {
     const payment = this.supplierPaymentRepo.create({
       payment_date: new Date(createSupplierPaymentDto.payment_date),
       amount: createSupplierPaymentDto.amount,
-      payment_method_id: createSupplierPaymentDto.payment_method_id || null,
+      payment_method_id: createSupplierPaymentDto.payment_method_id || undefined,
       reference_number: createSupplierPaymentDto.reference_number,
-      status: createSupplierPaymentDto.status,
+      status: createSupplierPaymentDto.status as SupplierPaymentStatus,
       supplier,
       purchaseOrder: purchaseOrder || undefined,
     });
