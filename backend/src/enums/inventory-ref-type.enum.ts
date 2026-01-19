@@ -1,0 +1,5 @@
+export enum InventoryReferenceType {
+  PURCHASE_ORDER = 'PURCHASE_ORDER',
+  SALES_ORDER = 'SALES_ORDER',
+  ADJUSTMENT = 'ADJUSTMENT',
+}

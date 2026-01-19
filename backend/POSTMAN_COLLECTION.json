@@ -1,0 +1,1278 @@
+{
+  "info": {
+    "name": "Inventory & Sales Management API",
+    "description": "Complete API collection for Inventory and Sales Management System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Signup Admin",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin User\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\",\n  \"phone\": \"1234567890\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/auth/signup",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "auth", "signup"]
+            }
+          }
+        },
+        {
+          "name": "Signin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["// Cookie is automatically set by server"]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/auth/signin",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "auth", "signin"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/auth/me",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"old_password\": \"admin123\",\n  \"new_password\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/auth/change-password",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "auth", "change-password"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:3000/api/auth/logout",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Manager\",\n  \"email\": \"manager@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"9876543210\",\n  \"role\": \"MANAGER\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/users",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "users"]
+            }
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/users",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "users"]
+            }
+          }
+        },
+        {
+          "name": "Get Roles",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/users/roles",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "users", "roles"]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/users/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "users", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"email\": \"updated@example.com\",\n  \"phone\": \"9999999999\",\n  \"role\": \"MANAGER\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/users/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "users", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Product Categories",
+      "item": [
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Electronics\",\n  \"description\": \"Electronic products and devices\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/product-categories",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "product-categories"]
+            }
+          }
+        },
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/product-categories",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "product-categories"]
+            }
+          }
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/product-categories/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "product-categories", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Category Name\",\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/product-categories/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "product-categories", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Disable Category",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "http://localhost:3000/api/product-categories/:id/status",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "product-categories", ":id", "status"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Dell XPS 13 Laptop\",\n  \"sku\": \"PROD-DELL-XPS13\",\n  \"category_id\": \"category-uuid-here\",\n  \"reorder_level\": 10,\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "products"]
+            }
+          }
+        },
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/products?page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "products"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/products/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "products", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Product Name\",\n  \"reorder_level\": 15\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/products/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "products", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Activate/Deactivate Product",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "http://localhost:3000/api/products/:id/status",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "products", ":id", "status"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Product Variants",
+      "item": [
+        {
+          "name": "Create Variant",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"variant_name\": \"MacBook Pro 14 - Space Gray - 512GB\",\n  \"sku\": \"VARIANT-MBP14-SG-512\",\n  \"price\": 1999.99,\n  \"product_id\": \"product-uuid-here\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/product-variants",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "product-variants"]
+            }
+          }
+        },
+        {
+          "name": "Get All Variants",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/product-variants?page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "product-variants"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product with Variants",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/product-variants/:productId/variants",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "product-variants", ":productId", "variants"],
+              "variable": [{"key": "productId", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Update Variant",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"variant_name\": \"Updated Variant Name\",\n  \"price\": 1499.99\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/product-variants/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "product-variants", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Disable Variant",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_active\": false\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/product-variants/:id/status",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "product-variants", ":id", "status"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inventory",
+      "item": [
+        {
+          "name": "Get All Inventory",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/inventory",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "inventory"]
+            }
+          }
+        },
+        {
+          "name": "Get Low Stock",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/inventory/low-stock",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "inventory", "low-stock"]
+            }
+          }
+        },
+        {
+          "name": "Get Inventory by Variant",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/inventory/:variantId/variant",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "inventory", ":variantId", "variant"],
+              "variable": [{"key": "variantId", "value": ""}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Suppliers",
+      "item": [
+        {
+          "name": "Create Supplier",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tech Suppliers Ltd\",\n  \"email\": \"contact@techsuppliers.com\",\n  \"phone\": \"1234567890\",\n  \"address\": \"123 Business Street, City, State, ZIP\",\n  \"gst_number\": \"GST123456789\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/suppliers",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "suppliers"]
+            }
+          }
+        },
+        {
+          "name": "Get All Suppliers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/suppliers",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "suppliers"]
+            }
+          }
+        },
+        {
+          "name": "Get Supplier by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/suppliers/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "suppliers", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Update Supplier",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Supplier Name\",\n  \"email\": \"updated@supplier.com\",\n  \"phone\": \"9999999999\",\n  \"address\": \"Updated Address\",\n  \"gst_number\": \"GST999999999\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/suppliers/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "suppliers", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Activate/Deactivate Supplier",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_active\": false\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/suppliers/:id/status",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "suppliers", ":id", "status"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Purchase Orders",
+      "item": [
+        {
+          "name": "Create Purchase Order",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"supplier_id\": \"supplier-uuid-here\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/purchase-orders",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "purchase-orders"]
+            }
+          }
+        },
+        {
+          "name": "Add Items to Purchase Order",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_variant_id\": \"variant-uuid-here\",\n  \"quantity\": 50,\n  \"unit_price\": 1299.99\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/purchase-orders/:id/items",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "purchase-orders", ":id", "items"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Get All Purchase Orders",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/purchase-orders?page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "purchase-orders"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "status", "value": "", "disabled": true},
+                {"key": "supplier_id", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Purchase Order by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/purchase-orders/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "purchase-orders", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Update Purchase Order Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"RECEIVED\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/purchase-orders/:id/status",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "purchase-orders", ":id", "status"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Get Purchase Order Payments",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/purchase-orders/:poId/payments",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "purchase-orders", ":poId", "payments"],
+              "variable": [{"key": "poId", "value": ""}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Supplier Payments",
+      "item": [
+        {
+          "name": "Create Supplier Payment",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"supplier_id\": \"supplier-uuid-here\",\n  \"purchase_order_id\": \"po-uuid-here\",\n  \"payment_date\": \"2024-01-15\",\n  \"amount\": 5000.00,\n  \"payment_method_id\": \"method-uuid-here\",\n  \"reference_number\": \"PAY-REF-001\",\n  \"status\": \"PENDING\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/supplier-payments",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "supplier-payments"]
+            }
+          }
+        },
+        {
+          "name": "Get All Supplier Payments",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/supplier-payments?page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "supplier-payments"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "supplier_id", "value": "", "disabled": true},
+                {"key": "status", "value": "", "disabled": true},
+                {"key": "from_date", "value": "", "disabled": true},
+                {"key": "to_date", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Supplier Payment by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/supplier-payments/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "supplier-payments", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Update Supplier Payment Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"COMPLETED\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/supplier-payments/:id/status",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "supplier-payments", ":id", "status"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"9876543210\",\n  \"address\": \"123 Main Street, City, State, ZIP\",\n  \"credit_limit\": 10000.00,\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/customers",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "customers"]
+            }
+          }
+        },
+        {
+          "name": "Get All Customers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/customers?page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "customers"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Customer by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/customers/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "customers", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"phone\": \"9999999999\",\n  \"credit_limit\": 15000.00\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/customers/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "customers", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Activate/Deactivate Customer",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "http://localhost:3000/api/customers/:id/status",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "customers", ":id", "status"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Get Supplier Payments by Supplier ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/suppliers/:supplierId/payments",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "suppliers", ":supplierId", "payments"],
+              "variable": [{"key": "supplierId", "value": ""}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sales Orders",
+      "item": [
+        {
+          "name": "Create Sales Order",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"customer-uuid-here\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/sales-orders",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "sales-orders"]
+            }
+          }
+        },
+        {
+          "name": "Add Items to Sales Order",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_variant_id\": \"variant-uuid-here\",\n  \"quantity\": 5,\n  \"unit_price\": 1999.99\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/sales-orders/:id/items",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "sales-orders", ":id", "items"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Get All Sales Orders",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/sales-orders?page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "sales-orders"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "customer_id", "value": "", "disabled": true},
+                {"key": "status", "value": "", "disabled": true},
+                {"key": "from_date", "value": "", "disabled": true},
+                {"key": "to_date", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Sales Order by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/sales-orders/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "sales-orders", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Update Sales Order Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"DELIVERED\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/sales-orders/:id/status",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "sales-orders", ":id", "status"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Invoices",
+      "item": [
+        {
+          "name": "Create Invoice",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sales_order_id\": \"sales-order-uuid-here\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/invoices",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "invoices"]
+            }
+          }
+        },
+        {
+          "name": "Get All Invoices",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/invoices?page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "invoices"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "status", "value": "", "disabled": true},
+                {"key": "from_date", "value": "", "disabled": true},
+                {"key": "to_date", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Invoice by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/invoices/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "invoices", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Generate Invoice PDF",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/invoices/:id/pdf",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "invoices", ":id", "pdf"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Get Invoice Payments",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/invoices/:invoiceId/payments",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "invoices", ":invoiceId", "payments"],
+              "variable": [{"key": "invoiceId", "value": ""}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Create Payment",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invoice_id\": \"invoice-uuid-here\",\n  \"payment_date\": \"2024-01-20\",\n  \"amount\": 2500.00,\n  \"payment_method_id\": \"method-uuid-here\",\n  \"reference_number\": \"PAY-REF-001\",\n  \"status\": \"PENDING\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/payments",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "payments"]
+            }
+          }
+        },
+        {
+          "name": "Get All Payments",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/payments?page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "payments"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "invoice_id", "value": "", "disabled": true},
+                {"key": "from_date", "value": "", "disabled": true},
+                {"key": "to_date", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Payment by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/payments/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "payments", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Update Payment Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SUCCESS\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/payments/:id/status",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "payments", ":id", "status"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Returns",
+      "item": [
+        {
+          "name": "Create Return",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sales_order_id\": \"sales-order-uuid-here\",\n  \"product_variant_id\": \"variant-uuid-here\",\n  \"quantity\": 2,\n  \"reason\": \"Defective product\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/returns",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "returns"]
+            }
+          }
+        },
+        {
+          "name": "Get All Returns",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/returns?page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "returns"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "customer_id", "value": "", "disabled": true},
+                {"key": "status", "value": "", "disabled": true},
+                {"key": "from_date", "value": "", "disabled": true},
+                {"key": "to_date", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Return by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/returns/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "returns", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Update Return Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"APPROVED\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/returns/:id/status",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "returns", ":id", "status"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Refunds",
+      "item": [
+        {
+          "name": "Create Refund",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"return_id\": \"return-uuid-here\",\n  \"refund_date\": \"2024-01-25\",\n  \"amount\": 3999.98,\n  \"payment_method_id\": \"method-uuid-here\",\n  \"reference_number\": \"REF-REF-001\",\n  \"status\": \"PENDING\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/refunds",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "refunds"]
+            }
+          }
+        },
+        {
+          "name": "Get All Refunds",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/refunds?page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "refunds"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "status", "value": "", "disabled": true},
+                {"key": "from_date", "value": "", "disabled": true},
+                {"key": "to_date", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Refund by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/refunds/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "refunds", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "Update Refund Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SUCCESS\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/refunds/:id/status",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "refunds", ":id", "status"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

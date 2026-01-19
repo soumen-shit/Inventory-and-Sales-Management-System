@@ -43,7 +43,11 @@ export class ProductCategoriesService {
   async findAllCategories() {
     return this.categoryRepo.find({
       where: { parent: IsNull(), is_active: true },
-      relations: ['children', 'children.children'],
+      relations: [
+        'children',
+        'children.children',
+        'children.children.children',
+      ],
       order: {
         created_at: 'ASC',
       },
@@ -53,7 +57,11 @@ export class ProductCategoriesService {
   async findCategoryById(id: string) {
     const category = await this.categoryRepo.findOne({
       where: { id },
-      relations: ['parent'],
+      relations: [
+        'children',
+        'children.children',
+        'children.children.children',
+      ],
     });
 
     if (!category) {
@@ -63,7 +71,7 @@ export class ProductCategoriesService {
     return category;
   }
 
-  async updateCategoryOrParent(
+  async updateCategory(
     id: string,
     updateCategoryDto: UpdateCategoryDto,
   ) {
@@ -84,10 +92,6 @@ export class ProductCategoriesService {
       category.description = updateCategoryDto.description;
     }
 
-    if (typeof updateCategoryDto.is_active === 'boolean') {
-      category.is_active = false;
-    }
-
     if (updateCategoryDto.parent_id) {
       if (updateCategoryDto.parent_id === id) {
         throw new ForbiddenException('Category cannot be its own parent');
@@ -103,6 +107,19 @@ export class ProductCategoriesService {
       category.parent = parent;
     }
 
+    return this.categoryRepo.save(category);
+  }
+
+  async changeStatus(id: string) {
+    const category = await this.categoryRepo.findOne({
+      where: { id },
+    });
+
+    if (!category) {
+      throw new NotFoundException('Category not found');
+    }
+
+    category.is_active = !category.is_active;
     return this.categoryRepo.save(category);
   }
 }

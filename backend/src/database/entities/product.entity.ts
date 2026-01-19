@@ -4,10 +4,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ProductCategory } from './product-category.entity';
+import { ProductVariant } from './product-variant.entity';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -37,4 +39,7 @@ export class Product {
   })
   @JoinColumn({ name: 'category_id' })
   category: ProductCategory;
+
+  @OneToMany(() => ProductVariant, (variant) => variant.product)
+  variants: ProductVariant[];
 }

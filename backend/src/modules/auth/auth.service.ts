@@ -89,7 +89,6 @@ export class AuthService {
   }
 
   async changePassword(changePasswordDto: ChangePasswordDto, reqData: any) {
-    console.log('chnagePasswordDto', changePasswordDto);
     const user = await this.userRepo.findOne({
       where: {
         id: reqData.userId,

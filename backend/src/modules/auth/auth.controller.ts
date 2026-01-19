@@ -62,7 +62,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuird)
-  @Patch('chnage-password')
+  @Patch('change-password')
   async changePassword(
     @Body() changePasswordDto: ChangePasswordDto,
     @Req() req: any,

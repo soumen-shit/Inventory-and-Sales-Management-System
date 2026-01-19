@@ -9,7 +9,9 @@ export const getJwtConfig = (
 
   const secret = configService.get<string>('JWT_ACCESS_SECRET');
   if (!secret) {
-    throw new Error('JWT_ACCESS_SECRET is not defined in environment variables');
+    throw new Error(
+      'JWT_ACCESS_SECRET is not defined in environment variables',
+    );
   }
 
   return {
