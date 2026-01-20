@@ -42,7 +42,7 @@ export class ProductCategoriesService {
 
   async findAllCategories() {
     return this.categoryRepo.find({
-      where: { parent: IsNull(), is_active: true },
+      where: { parent: IsNull() },
       relations: [
         'children',
         'children.children',
@@ -71,10 +71,7 @@ export class ProductCategoriesService {
     return category;
   }
 
-  async updateCategory(
-    id: string,
-    updateCategoryDto: UpdateCategoryDto,
-  ) {
+  async updateCategory(id: string, updateCategoryDto: UpdateCategoryDto) {
     const category = await this.categoryRepo.findOne({
       where: { id },
       relations: ['parent'],

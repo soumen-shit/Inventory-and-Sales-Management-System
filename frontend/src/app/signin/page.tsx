@@ -1,5 +1,6 @@
 "use client";
-import { loginUser } from "@/lib/auth";
+import { loginUser } from "@/lib/queries/auth";
+import { queryClient } from "@/lib/queryClient";
 import { Button, Paper, TextField } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
@@ -8,12 +9,13 @@ import React, { useState } from "react";
 
 const Signin = () => {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState("");
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: loginUser,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
       router.push("/");
     },
   });

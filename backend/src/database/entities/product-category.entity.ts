@@ -19,7 +19,7 @@ export class ProductCategory {
   name: string;
 
   @Column({ type: 'text' })
-  description: string;
+  description?: string;
 
   @Column({ type: 'boolean', default: true })
   is_active: boolean;

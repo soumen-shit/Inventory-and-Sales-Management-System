@@ -16,7 +16,8 @@ export class ProductCategoryDto {
   parent_id?: string;
 
   @IsString()
-  description: string;
+  @IsOptional()
+  description?: string;
 
   @IsBoolean()
   @IsOptional()

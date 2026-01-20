@@ -1,5 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from 'src/database/entities/role.entity';
 import { User } from 'src/database/entities/user.entity';
@@ -26,6 +29,10 @@ export class UsersService {
 
     if (!role) {
       throw new NotFoundException('Role not found');
+    }
+
+    if (createUserDto.role === 'ADMIN') {
+      throw new BadRequestException('ADMIN user already present in system');
     }
 
     const hashedPassword = await hashPassword(createUserDto.password);

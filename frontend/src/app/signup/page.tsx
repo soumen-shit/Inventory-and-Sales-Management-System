@@ -1,5 +1,5 @@
 "use client";
-import { registerUser } from "@/lib/auth";
+import { registerUser } from "@/lib/queries/auth";
 import { Button, Paper, TextField } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
@@ -16,7 +16,9 @@ const Signup = () => {
   const { mutate, isPending, error } = useMutation({
     mutationFn: registerUser,
     onSuccess: () => {
-      router.push("/signin");
+      setTimeout(() => {
+        router.push("/signin");
+      }, 2000);
     },
   });
 
