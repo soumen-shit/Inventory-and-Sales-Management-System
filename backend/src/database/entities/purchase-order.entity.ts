@@ -29,7 +29,7 @@ export class PurchaseOrder {
   created_by: string;
 
   @OneToMany(() => PurchaseOrderItem, (orderItem) => orderItem.purchaseOrder)
-  orderItem: PurchaseOrderItem[];
+  orderItems: PurchaseOrderItem[];
 
   @ManyToOne(() => Supplier, (supplier) => supplier.purchaseOrders)
   @JoinColumn({ name: 'supplier_id' })

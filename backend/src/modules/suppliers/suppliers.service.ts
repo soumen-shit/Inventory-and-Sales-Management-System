@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Supplier } from 'src/database/entities/supplier.entity';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
 
@@ -34,7 +34,6 @@ export class SuppliersService {
 
   async findAllSupplier() {
     const suppliers = await this.supplierRepo.find({
-      where: { is_active: true },
       order: { created_at: 'DESC' },
     });
 
@@ -70,26 +69,24 @@ export class SuppliersService {
     }
     if (updateSupplierDto.email) {
       const isEmailExits = await this.supplierRepo.findOne({
-        where: { email: updateSupplierDto.email },
+        where: { email: updateSupplierDto.email, id: Not(id) },
       });
 
       if (isEmailExits) {
         throw new ConflictException('Supplier email already exists');
-      } else {
-        supplier.email = updateSupplierDto.email;
       }
+      supplier.email = updateSupplierDto.email;
     }
 
     if (updateSupplierDto.phone) {
       const isPhoneExsits = await this.supplierRepo.findOne({
-        where: { phone: updateSupplierDto.phone },
+        where: { phone: updateSupplierDto.phone, id: Not(id) },
       });
 
       if (isPhoneExsits) {
         throw new ConflictException('Supplier phone number already exists');
-      } else {
-        supplier.phone = updateSupplierDto.phone;
       }
+      supplier.phone = updateSupplierDto.phone;
     }
 
     if (updateSupplierDto.address) {
@@ -98,7 +95,7 @@ export class SuppliersService {
 
     if (updateSupplierDto.gst_number) {
       const isGstExits = await this.supplierRepo.findOne({
-        where: { gst_number: updateSupplierDto.gst_number },
+        where: { gst_number: updateSupplierDto.gst_number, id: Not(id) },
       });
 
       if (isGstExits) {

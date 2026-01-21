@@ -63,7 +63,7 @@ export class ProductVariantsController {
   @Roles('ADMIN')
   async changeVariantStatus(
     @Param('id') id: string,
-    updateVariantDto: UpdateVariantDto,
+    @Body() updateVariantDto: UpdateVariantDto,
   ) {
     return this.productVariantService.changeVariantStatus(id, updateVariantDto);
   }

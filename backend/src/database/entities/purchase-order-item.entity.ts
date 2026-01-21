@@ -22,7 +22,7 @@ export class PurchaseOrderItem {
   @Column({ type: 'decimal', precision: 12, scale: 2 })
   total_price: number;
 
-  @ManyToOne(() => PurchaseOrder, (purchaseOrder) => purchaseOrder.orderItem)
+  @ManyToOne(() => PurchaseOrder, (purchaseOrder) => purchaseOrder.orderItems)
   @JoinColumn({ name: 'purchase_order_id' })
   purchaseOrder: PurchaseOrder;
 

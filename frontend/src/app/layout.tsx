@@ -4,6 +4,7 @@ import "./globals.css";
 import { queryClient } from "@/lib/queryClient";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
+// import { AuthProvider } from "@/context/AuthContext";
 
 const theme = createTheme({
   palette: {

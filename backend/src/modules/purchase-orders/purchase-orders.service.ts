@@ -62,7 +62,7 @@ export class PurchaseOrdersService {
   ) {
     const po = await this.purchaseOrderRepo.findOne({
       where: { id: poId },
-      relations: ['orderItem'],
+      relations: ['orderItems', 'orderItems.variant'],
     });
 
     if (!po) {
@@ -143,7 +143,7 @@ export class PurchaseOrdersService {
 
     const [data, total] = await this.purchaseOrderRepo.findAndCount({
       where,
-      relations: ['supplier', 'orderItem', 'orderItem.variant'],
+      relations: ['supplier', 'orderItems', 'orderItems.variant'],
       skip,
       take: limit,
       order: { order_date: 'DESC' },
@@ -163,9 +163,9 @@ export class PurchaseOrdersService {
       where: { id },
       relations: [
         'supplier',
-        'orderItem',
-        'orderItem.variant',
-        'orderItem.variant.product',
+        'orderItems',
+        'orderItems.variant',
+        'orderItems.variant.product',
       ],
     });
 
@@ -179,7 +179,7 @@ export class PurchaseOrdersService {
   async updateStatus(id: string, status: string) {
     const purchaseOrder = await this.purchaseOrderRepo.findOne({
       where: { id },
-      relations: ['orderItem', 'orderItem.variant'],
+      relations: ['orderItems', 'orderItems.variant'],
     });
 
     if (!purchaseOrder) {
@@ -199,7 +199,7 @@ export class PurchaseOrdersService {
     }
 
     if (status === 'RECEIVED') {
-      if (purchaseOrder.orderItem.length === 0) {
+      if (purchaseOrder.orderItems.length === 0) {
         throw new BadRequestException(
           'Cannot receive purchase order without items',
         );
@@ -212,7 +212,7 @@ export class PurchaseOrdersService {
 
       try {
         // Process each item in the purchase order
-        for (const item of purchaseOrder.orderItem) {
+        for (const item of purchaseOrder.orderItems) {
           const variant = item.variant;
 
           // Generate batch number

@@ -64,13 +64,21 @@ export class UsersService {
     return user;
   }
 
-  async updateUser(id: string, updateUserDto: UpdateUserDto) {
+  async updateUser(
+    id: string,
+    updateUserDto: UpdateUserDto,
+    currUserId: string,
+  ) {
     const user = await this.userRepo.findOne({
       where: { id },
       relations: ['role'],
     });
     if (!user) {
       throw new NotFoundException('User not found');
+    }
+
+    if (updateUserDto.role !== 'ADMIN' && id === currUserId) {
+      throw new BadRequestException('You cannot change your own role');
     }
     if (updateUserDto.name) {
       user.name = updateUserDto.name;

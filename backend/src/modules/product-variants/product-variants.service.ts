@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductVariant } from 'src/database/entities/product-variant.entity';
 import { Product } from 'src/database/entities/product.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Not, Repository } from 'typeorm';
 import { CreateVariantDto } from './dto/create-variant.dto';
 import { UpdateVariantDto } from './dto/updat-variant.dto';
 import { Inventory } from 'src/database/entities/inventory.entity';
@@ -70,8 +70,7 @@ export class ProductVariantsService {
 
     const qb = this.variantRepo
       .createQueryBuilder('variant')
-      .leftJoinAndSelect('variant.product', 'product')
-      .where('variant.is_active = :isActive', { isActive: true });
+      .leftJoinAndSelect('variant.product', 'product');
 
     //Search
     if (search) {
@@ -89,8 +88,13 @@ export class ProductVariantsService {
 
     const [data, total] = await qb.getManyAndCount();
 
+    const normalizeData = data.map((variant) => ({
+      ...variant,
+      price: Number(variant.price),
+    }));
+
     return {
-      data,
+      data: normalizeData,
       total,
       page,
       limit,
@@ -110,7 +114,7 @@ export class ProductVariantsService {
       throw new NotFoundException('Product not found');
     }
 
-    return product;
+    return { product, variants: product.variants };
   }
 
   async updateVariant(id: string, updateVariantDto: UpdateVariantDto) {
@@ -133,11 +137,22 @@ export class ProductVariantsService {
       prodVariants.variant_name = updateVariantDto.variant_name;
     }
     if (updateVariantDto.sku) {
+      const isSkuExists = await this.variantRepo.findOne({
+        where: {
+          sku: updateVariantDto.sku,
+          id: Not(id),
+        },
+      });
+
+      if (isSkuExists) {
+        throw new ConflictException('Variant SKU already exists');
+      }
+
       prodVariants.sku = updateVariantDto.sku;
     }
 
     if (updateVariantDto.price != undefined) {
-      prodVariants.price = updateVariantDto.price;
+      prodVariants.price = Number(updateVariantDto.price);
     }
 
     return this.variantRepo.save(prodVariants);

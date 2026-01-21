@@ -12,8 +12,8 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
 import { SuppliersService } from './suppliers.service';
 import { Roles } from 'src/common/decorator/roles.decorator';
 import { CreateSupplierDto } from './dto/create-supplier.dto';
-import { UpdateCategoryDto } from '../product-categories/dto/update-product-categories.dto';
 import { SupplierPaymentsService } from '../supplier-payments/supplier-payments.service';
+import { UpdateSupplierDto } from './dto/update-supplier.dto';
 
 @UseGuards(JwtAuthGuird, RolesGuard)
 @Controller('suppliers')
@@ -46,14 +46,17 @@ export class SuppliersController {
   async updateSupplier(
     @Param('id')
     id: string,
-    @Body() updateSupplierDto: UpdateCategoryDto,
+    @Body() updateSupplierDto: UpdateSupplierDto,
   ) {
     return this.supplierService.updateSupplier(id, updateSupplierDto);
   }
 
   @Patch(':id/status')
   @Roles('ADMIN')
-  async changeStatus(@Param('id') id: string, @Body() body: { is_active: boolean }) {
+  async changeStatus(
+    @Param('id') id: string,
+    @Body() body: { is_active: boolean },
+  ) {
     return this.supplierService.changeStatus(id, body.is_active);
   }
 

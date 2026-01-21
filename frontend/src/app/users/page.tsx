@@ -2,6 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Layout from "@/components/Layout";
 import ProtectedRoute from "@/components/ProtectedRoute";
+// import { useAuth } from "@/context/AuthContext";
+import { fetchMe } from "@/lib/queries/auth";
 import {
   useCreateUser,
   useRoles,
@@ -31,6 +33,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 
 const UsersPage = () => {
@@ -95,6 +98,14 @@ const UsersPage = () => {
       createUser.mutate(submitData, { onSuccess: handleCloseDialog });
     }
   };
+
+  const { data: currUser } = useQuery({
+    queryFn: fetchMe,
+    queryKey: ["currUser"],
+  });
+
+  const itSelf = editingUser?.id === currUser?.userId;
+  console.log(currUser);
   return (
     <ProtectedRoute>
       <Layout>
@@ -247,25 +258,33 @@ const UsersPage = () => {
                 />
               )}
 
-              <FormControl fullWidth margin="normal" required>
-                <InputLabel id="role-label">Role</InputLabel>
-                <Select
-                  labelId="role-label"
-                  label="Role"
-                  value={formData.role}
-                  onChange={(e) =>
-                    setFormData({ ...formData, role: e.target.value })
-                  }
-                >
-                  {roles
-                    ?.filter((role) => role.name !== "ADMIN")
-                    .map((role) => (
-                      <MenuItem key={role.id} value={role.name}>
-                        {role.name}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
+              {!itSelf && (
+                <FormControl fullWidth margin="normal" required>
+                  <InputLabel id="role-label">Role</InputLabel>
+                  <Select
+                    labelId="role-label"
+                    label="Role"
+                    disabled={itSelf}
+                    value={formData.role}
+                    onChange={(e) =>
+                      setFormData({ ...formData, role: e.target.value })
+                    }
+                  >
+                    {roles
+                      ?.filter((role) => role.name !== "ADMIN")
+                      .map((role) => (
+                        <MenuItem key={role.id} value={role.name}>
+                          {role.name}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                  {itSelf && (
+                    <Typography variant="caption" color="error">
+                      You cannot change your own role
+                    </Typography>
+                  )}
+                </FormControl>
+              )}
             </DialogContent>
             <DialogActions>
               <Button onClick={handleCloseDialog}>Cancel</Button>

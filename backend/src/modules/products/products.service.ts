@@ -57,8 +57,7 @@ export class ProductsService {
     const search = query.search;
     const qb = this.productRepo
       .createQueryBuilder('product')
-      .leftJoinAndSelect('product.category', 'category')
-      .where('product.is_active = :isActive', { isActive: true });
+      .leftJoinAndSelect('product.category', 'category');
 
     //Search
     if (search) {
@@ -130,7 +129,7 @@ export class ProductsService {
     }
 
     product.is_active = !product.is_active;
-    await this.productCategoryRepo.save(product);
+    await this.productRepo.save(product);
     return product;
   }
 }
