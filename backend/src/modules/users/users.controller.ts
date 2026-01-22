@@ -24,7 +24,6 @@ export class UsersController {
   @Post()
   @Roles('ADMIN')
   createUser(@Body() createUserDto: CreateUserDto) {
-    console.log('Create user request');
     return this.userService.createUser(createUserDto);
   }
 
@@ -37,7 +36,6 @@ export class UsersController {
   @Get('roles')
   @Roles('ADMIN')
   getRoles() {
-    console.log('hi');
     return this.userService.getRoles();
   }
 

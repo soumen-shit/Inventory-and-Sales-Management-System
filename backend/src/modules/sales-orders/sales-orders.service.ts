@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import {
   BadRequestException,
   Injectable,
@@ -36,7 +37,10 @@ export class SalesOrdersService {
     private dataSource: DataSource,
   ) {}
 
-  async createSalesOrder(createSalesOrderDto: CreateSalesOrderDto, userId: string) {
+  async createSalesOrder(
+    createSalesOrderDto: CreateSalesOrderDto,
+    userId: string,
+  ) {
     const customer = await this.customerRepo.findOne({
       where: { id: createSalesOrderDto.customer_id },
     });
@@ -208,7 +212,11 @@ export class SalesOrdersService {
   async updateStatus(id: string, status: string) {
     const salesOrder = await this.salesOrderRepo.findOne({
       where: { id },
-      relations: ['orderItems', 'orderItems.variant', 'orderItems.variant.inventory'],
+      relations: [
+        'orderItems',
+        'orderItems.variant',
+        'orderItems.variant.inventory',
+      ],
     });
 
     if (!salesOrder) {

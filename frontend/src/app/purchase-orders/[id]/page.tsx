@@ -22,7 +22,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function PurchaseOrderDetailPage() {
@@ -31,17 +31,23 @@ export default function PurchaseOrderDetailPage() {
   const { data: variants } = useVariants();
   const addItem = useAddPurchaseOrderItem();
   const updateStatus = useUpdatePurchaseOrderStatus();
-
-  console.log(order);
+  const router = useRouter();
 
   const [item, setItem] = useState({
     product_variant_id: "",
     quantity: 1,
-    unit_price: 0,
+    unit_price: 1,
   });
 
   const handleAddItem = () => {
-    addItem.mutate({ id, data: item });
+    addItem.mutate(
+      { id, data: item },
+      {
+        onSuccess: () => {
+          router.push("/purchase-orders");
+        },
+      },
+    );
   };
 
   return (
@@ -80,16 +86,24 @@ export default function PurchaseOrderDetailPage() {
                 setItem({ ...item, quantity: Number(e.target.value) })
               }
               sx={{ width: 100 }}
+              inputProps={{
+                min: 0,
+              }}
             />
 
             <TextField
               type="number"
               label="Unit Price"
               value={item.unit_price}
-              onChange={(e) =>
-                setItem({ ...item, unit_price: Number(e.target.value) })
-              }
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                if (value < 0) return;
+                setItem({ ...item, unit_price: value });
+              }}
               sx={{ width: 140 }}
+              inputProps={{
+                min: 0,
+              }}
             />
 
             <Button
@@ -118,7 +132,7 @@ export default function PurchaseOrderDetailPage() {
                 <TableCell>{i.variant?.variant_name}</TableCell>
                 <TableCell>{i.quantity}</TableCell>
                 <TableCell>₹{i.unit_price}</TableCell>
-                <TableCell>₹{i.total}</TableCell>
+                <TableCell>₹{i.total_price}</TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -25,12 +25,10 @@ export async function seedRoles() {
       },
     });
     if (exists) {
-      console.log(`${role.name} role already exists`);
       continue;
     }
 
     const newRole = repo.create(role);
     await repo.save(newRole);
-    console.log(` ${role.name} role seeded`);
   }
 }

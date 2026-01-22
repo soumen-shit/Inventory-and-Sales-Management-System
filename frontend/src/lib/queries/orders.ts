@@ -23,7 +23,7 @@ export interface PurchaseOrderItem {
   variant?: any;
   quantity: number;
   unit_price: number;
-  total: number;
+  total_price: number;
 }
 
 export interface SalesOrder {

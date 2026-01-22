@@ -3,12 +3,11 @@
 import Layout from "@/components/Layout";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import {
-  useCreatePurchaseOrder,
-  usePurchaseOrders,
-  useUpdatePurchaseOrderStatus,
-} from "@/lib/queries/orders";
+  useCreateSupplierPayment,
+  useSupplierPayments,
+  useUpdateSupplierPaymentStatus,
+} from "@/lib/queries/supplier-payments";
 import { useSuppliers } from "@/lib/queries/suppliers";
-import { Add } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -19,9 +18,9 @@ import {
   DialogTitle,
   FormControl,
   InputLabel,
-  Link,
   MenuItem,
   Pagination,
+  Paper,
   Select,
   Table,
   TableBody,
@@ -29,49 +28,67 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
+import { Add } from "@mui/icons-material";
 import { format } from "date-fns";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-const PurchaseOrdersPage = () => {
+const SupplierPaymentsPage = () => {
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState("");
-  const [supplierFilter, setSupplierFilter] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
-  const [formData, setFormData] = useState({ supplier_id: "" });
-  const router = useRouter();
 
-  const { data, isLoading } = usePurchaseOrders({
+  const [supplierId, setSupplierId] = useState("");
+  const [purchaseOrderId, setPurchaseOrderId] = useState("");
+  const [paymentDate, setPaymentDate] = useState("");
+  const [amount, setAmount] = useState("");
+
+  const { data, isLoading } = useSupplierPayments({
     page,
     limit: 10,
     status: statusFilter || undefined,
-    supplier_id: supplierFilter || undefined,
+    from_date: fromDate || undefined,
+    to_date: toDate || undefined,
   });
 
-  console.log(data);
-
   const { data: suppliers } = useSuppliers();
-  const createOrder = useCreatePurchaseOrder();
-  const updateStatus = useUpdatePurchaseOrderStatus();
 
-  const handleSubmit = () => {
-    createOrder.mutate(formData, {
-      onSuccess: (data: any) => {
-        setOpenDialog(false);
-        router.push(`/purchase-orders/${data.data.id}`);
-      },
-    });
-  };
+  const createPayment = useCreateSupplierPayment();
+  const updateStatus = useUpdateSupplierPaymentStatus();
 
   const handleStatusChange = (id: string, status: string) => {
     updateStatus.mutate({ id, status });
   };
+
+  const handleCreatePayment = () => {
+    createPayment.mutate(
+      {
+        supplier_id: supplierId,
+        purchase_order_id: purchaseOrderId || undefined,
+        payment_date: paymentDate,
+        amount: Number(amount),
+      } as any,
+      {
+        onSuccess: () => {
+          setOpenDialog(false);
+          setSupplierId("");
+          setPurchaseOrderId("");
+          setPaymentDate("");
+          setAmount("");
+        },
+      },
+    );
+  };
+
   return (
     <ProtectedRoute>
       <Layout>
         <Box>
+          {/* Header */}
           <Box
             sx={{
               display: "flex",
@@ -81,66 +98,74 @@ const PurchaseOrdersPage = () => {
             }}
           >
             <Typography variant="h4" fontWeight="bold">
-              Purchase Orders
+              Supplier Payments
             </Typography>
+
             <Button
               variant="contained"
               startIcon={<Add />}
               onClick={() => setOpenDialog(true)}
             >
-              Create Order
+              Add Payment
             </Button>
           </Box>
 
+          {/* Filters */}
           <Box sx={{ mb: 3, display: "flex", gap: 2 }}>
             <FormControl sx={{ minWidth: 150 }}>
               <InputLabel>Status</InputLabel>
               <Select
                 value={statusFilter}
+                label="Status"
                 onChange={(e) => {
                   setStatusFilter(e.target.value);
                   setPage(1);
                 }}
-                label="Status"
               >
                 <MenuItem value="">All</MenuItem>
                 <MenuItem value="PENDING">Pending</MenuItem>
-                <MenuItem value="RECEIVED">Received</MenuItem>
-                <MenuItem value="CANCELLED">Cancelled</MenuItem>
+                <MenuItem value="COMPLETED">Completed</MenuItem>
+                <MenuItem value="FAILED">Failed</MenuItem>
               </Select>
             </FormControl>
-            <FormControl sx={{ minWidth: 200 }}>
-              <InputLabel>Supplier</InputLabel>
-              <Select
-                value={supplierFilter}
-                onChange={(e) => {
-                  setSupplierFilter(e.target.value);
-                  setPage(1);
-                }}
-                label="Supplier"
-              >
-                <MenuItem value="">All</MenuItem>
-                {suppliers?.map((supplier) => (
-                  <MenuItem key={supplier.id} value={supplier.id}>
-                    {supplier.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+
+            <TextField
+              type="date"
+              label="From Date"
+              InputLabelProps={{ shrink: true }}
+              value={fromDate}
+              onChange={(e) => {
+                setFromDate(e.target.value);
+                setPage(1);
+              }}
+            />
+
+            <TextField
+              type="date"
+              label="To Date"
+              InputLabelProps={{ shrink: true }}
+              value={toDate}
+              onChange={(e) => {
+                setToDate(e.target.value);
+                setPage(1);
+              }}
+            />
           </Box>
 
-          <TableContainer>
+          {/* Table */}
+          <TableContainer component={Paper}>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Order Number</TableCell>
+                  <TableCell>Payment ID</TableCell>
                   <TableCell>Supplier</TableCell>
-                  <TableCell>Order Date</TableCell>
-                  <TableCell align="right">Total Amount</TableCell>
+                  <TableCell align="right">Amount</TableCell>
+                  <TableCell>Payment Date</TableCell>
                   <TableCell>Status</TableCell>
                   <TableCell align="right">Actions</TableCell>
                 </TableRow>
               </TableHead>
+
               <TableBody>
                 {isLoading ? (
                   <TableRow>
@@ -151,34 +176,27 @@ const PurchaseOrdersPage = () => {
                 ) : data?.data?.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={6} align="center">
-                      No purchase orders found
+                      No supplier payments found
                     </TableCell>
                   </TableRow>
                 ) : (
-                  data?.data?.map((order) => (
-                    <TableRow key={order.id}>
-                      <TableCell>
-                        <Link
-                          href={`/purchase-orders/${order.id}`}
-                          sx={{ cursor: "pointer", textDecoration: "none" }}
-                        >
-                          {order.id}
-                        </Link>
-                      </TableCell>
-                      <TableCell>{order.supplier?.name || "-"}</TableCell>
-                      <TableCell>
-                        {format(new Date(order.order_date), "MMM dd, yyyy")}
-                      </TableCell>
+                  data?.data.map((payment) => (
+                    <TableRow key={payment.id}>
+                      <TableCell>{payment.id}</TableCell>
+                      <TableCell>{payment.supplier?.name}</TableCell>
                       <TableCell align="right">
-                        ₹{Number(order.total_amount).toFixed(2)}
+                        ₹{Number(payment.amount).toFixed(2)}
+                      </TableCell>
+                      <TableCell>
+                        {format(new Date(payment.payment_date), "MMM dd, yyyy")}
                       </TableCell>
                       <TableCell>
                         <Chip
-                          label={order.status}
+                          label={payment.status}
                           color={
-                            order.status === "RECEIVED"
+                            payment.status === "COMPLETED"
                               ? "success"
-                              : order.status === "PENDING"
+                              : payment.status === "PENDING"
                                 ? "warning"
                                 : "error"
                           }
@@ -186,17 +204,16 @@ const PurchaseOrdersPage = () => {
                         />
                       </TableCell>
                       <TableCell align="right">
-                        {order.status === "PENDING" && (
+                        {payment.status === "PENDING" && (
                           <Select
                             size="small"
-                            value={order.status}
+                            value={payment.status}
                             onChange={(e) =>
-                              handleStatusChange(order.id, e.target.value)
+                              handleStatusChange(payment.id, e.target.value)
                             }
-                            sx={{ minWidth: 120 }}
                           >
-                            <MenuItem value="RECEIVED">Mark Received</MenuItem>
-                            <MenuItem value="CANCELLED">Cancel</MenuItem>
+                            <MenuItem value="COMPLETED">Complete</MenuItem>
+                            <MenuItem value="FAILED">Fail</MenuItem>
                           </Select>
                         )}
                       </TableCell>
@@ -207,6 +224,7 @@ const PurchaseOrdersPage = () => {
             </Table>
           </TableContainer>
 
+          {/* Pagination */}
           {data && data.totalPages > 1 && (
             <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
               <Pagination
@@ -218,39 +236,72 @@ const PurchaseOrdersPage = () => {
             </Box>
           )}
 
+          {/* ADD PAYMENT DIALOG */}
           <Dialog
             open={openDialog}
             onClose={() => setOpenDialog(false)}
             maxWidth="sm"
             fullWidth
           >
-            <DialogTitle>Create Purchase Order</DialogTitle>
+            <DialogTitle>Add Supplier Payment</DialogTitle>
+
             <DialogContent>
               <FormControl fullWidth margin="normal" required>
                 <InputLabel>Supplier</InputLabel>
                 <Select
-                  value={formData.supplier_id}
-                  onChange={(e) =>
-                    setFormData({ ...formData, supplier_id: e.target.value })
-                  }
+                  value={supplierId}
                   label="Supplier"
+                  onChange={(e) => {
+                    setSupplierId(e.target.value);
+                    setPurchaseOrderId("");
+                  }}
                 >
-                  {suppliers?.map((supplier) => (
-                    <MenuItem key={supplier.id} value={supplier.id}>
-                      {supplier.name}
+                  {suppliers?.map((s) => (
+                    <MenuItem key={s.id} value={s.id}>
+                      {s.name}
                     </MenuItem>
                   ))}
                 </Select>
               </FormControl>
+
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Amount"
+                type="number"
+                value={amount}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (Number(value) < 0) return;
+                  setAmount(value);
+                }}
+                inputProps={{
+                  min: 0,
+                  step: "0.01",
+                }}
+                required
+              />
+
+              <TextField
+                fullWidth
+                margin="normal"
+                type="date"
+                label="Payment Date"
+                InputLabelProps={{ shrink: true }}
+                value={paymentDate}
+                onChange={(e) => setPaymentDate(e.target.value)}
+                required
+              />
             </DialogContent>
+
             <DialogActions>
               <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
               <Button
                 variant="contained"
-                onClick={handleSubmit}
-                disabled={createOrder.isPending}
+                disabled={!supplierId || !paymentDate}
+                onClick={handleCreatePayment}
               >
-                Create
+                Save
               </Button>
             </DialogActions>
           </Dialog>
@@ -260,4 +311,4 @@ const PurchaseOrdersPage = () => {
   );
 };
 
-export default PurchaseOrdersPage;
+export default SupplierPaymentsPage;

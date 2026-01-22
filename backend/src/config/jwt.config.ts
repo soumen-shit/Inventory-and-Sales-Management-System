@@ -5,8 +5,6 @@ import { StringValue } from 'ms';
 export const getJwtConfig = (
   configService: ConfigService,
 ): JwtModuleOptions => {
-  console.log('Loading JWT Config');
-
   const secret = configService.get<string>('JWT_ACCESS_SECRET');
   if (!secret) {
     throw new Error(

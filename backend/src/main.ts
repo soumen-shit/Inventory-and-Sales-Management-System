@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
@@ -21,8 +22,7 @@ async function bootstrap() {
     app.use(cookieParser());
     app.setGlobalPrefix('api');
     await app.listen(process.env.PORT ?? 4000);
-  } catch (error) {
-    console.log('Server error', error);
+  } catch (err) {
     process.exit(1);
   }
 }

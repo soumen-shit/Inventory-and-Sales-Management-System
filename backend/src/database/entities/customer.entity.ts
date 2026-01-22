@@ -25,7 +25,13 @@ export class Customer {
   @Column({ type: 'text' })
   address: string;
 
-  @Column({ type: 'decimal', precision: 12, scale: 2, name: 'credit_limit' })
+  @Column({
+    type: 'decimal',
+    precision: 12,
+    scale: 2,
+    name: 'credit_limit',
+    default: 1000.0,
+  })
   credit_limit: number;
 
   @Column({ type: 'boolean', default: true, name: 'is_active' })

@@ -39,6 +39,7 @@ export class SupplierPaymentsService {
     if (createSupplierPaymentDto.purchase_order_id) {
       purchaseOrder = await this.purchaseOrderRepo.findOne({
         where: { id: createSupplierPaymentDto.purchase_order_id },
+        relations: ['supplier'],
       });
 
       if (!purchaseOrder) {
@@ -55,9 +56,9 @@ export class SupplierPaymentsService {
     const payment = this.supplierPaymentRepo.create({
       payment_date: new Date(createSupplierPaymentDto.payment_date),
       amount: createSupplierPaymentDto.amount,
-      payment_method_id: createSupplierPaymentDto.payment_method_id || undefined,
-      reference_number: createSupplierPaymentDto.reference_number,
-      status: createSupplierPaymentDto.status as SupplierPaymentStatus,
+      payment_method_id:
+        createSupplierPaymentDto.payment_method_id || undefined,
+      status: SupplierPaymentStatus.PENDING,
       supplier,
       purchaseOrder: purchaseOrder || undefined,
     });
@@ -172,7 +173,9 @@ export class SupplierPaymentsService {
     if (!payment) {
       throw new NotFoundException('Supplier payment not found');
     }
-
+    if (payment.status === SupplierPaymentStatus.COMPLETED) {
+      throw new BadRequestException('Cannot change successful payment');
+    }
     payment.status = status as any;
     return this.supplierPaymentRepo.save(payment);
   }

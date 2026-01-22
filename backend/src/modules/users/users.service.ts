@@ -19,8 +19,6 @@ export class UsersService {
   ) {}
 
   async createUser(createUserDto: CreateUserDto) {
-    console.log('Creating user:', createUserDto.role);
-
     const role = await this.roleRepo.findOne({
       where: {
         name: createUserDto.role,

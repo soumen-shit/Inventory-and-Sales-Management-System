@@ -62,4 +62,10 @@ export class SupplierPaymentsController {
   ) {
     return this.supplierPaymentsService.updateStatus(id, updateDto.status);
   }
+
+  @Get('/suppliers/:supplierId/payments')
+  @Roles('ADMIN', 'MANAGER')
+  findBySupplier(@Param('supplierId') supplierId: string) {
+    return this.supplierPaymentsService.findBySupplier(supplierId);
+  }
 }

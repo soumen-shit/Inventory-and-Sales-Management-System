@@ -60,9 +60,8 @@ export class PurchaseOrdersService {
     poId: string,
     createPurchaseOrderItemDto: CreatePurchaseOrderItemDto,
   ) {
-    const po = await this.purchaseOrderRepo.findOne({
+    let po = await this.purchaseOrderRepo.findOne({
       where: { id: poId },
-      relations: ['orderItems', 'orderItems.variant'],
     });
 
     if (!po) {
@@ -103,19 +102,28 @@ export class PurchaseOrdersService {
 
     await this.purchaseOrderItemRepo.save(purchaseOrderItem);
 
-    // Recalculate total amount
+    // // Recalculate total amount
     const items = await this.purchaseOrderItemRepo.find({
       where: { purchaseOrder: { id: poId } },
     });
+
+    // return items;
 
     po.total_amount = items.reduce(
       (sum, item) => sum + Number(item.total_price),
       0,
     );
 
+    // return po;
+
     await this.purchaseOrderRepo.save(po);
 
-    return purchaseOrderItem;
+    po = await this.purchaseOrderRepo.findOne({
+      where: { id: poId },
+      relations: ['orderItems', 'orderItems.variant'],
+    });
+
+    return po;
   }
 
   async findAllPurchaseOrder(query?: {

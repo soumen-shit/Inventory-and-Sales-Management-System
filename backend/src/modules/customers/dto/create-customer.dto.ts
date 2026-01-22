@@ -28,8 +28,8 @@ export class CreateCustomerDto {
   address: string;
 
   @IsDecimal({ decimal_digits: '0,2' })
-  @IsNotEmpty()
-  credit_limit: number;
+  @IsOptional()
+  credit_limit?: number;
 
   @IsBoolean()
   @IsOptional()

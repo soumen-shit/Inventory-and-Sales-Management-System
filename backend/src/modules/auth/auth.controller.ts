@@ -22,7 +22,6 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Post('signup')
   signupAdmin(@Body() signupDto: SignupAdminDto) {
-    console.log('signup request recive');
     return this.authService.signupAdmin(signupDto);
   }
 
@@ -32,7 +31,6 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const { token } = await this.authService.signin(signinDto);
-    console.log('token', token);
 
     res.cookie('access_token', token, {
       httpOnly: true,
@@ -41,7 +39,6 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    console.log('JWT cookie set');
     return {
       message: 'Login Success',
     };
@@ -50,14 +47,12 @@ export class AuthController {
   @Post('logout')
   logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie('access_token');
-    console.log('Logged out');
     return { message: 'Logged out successfully' };
   }
 
   @UseGuards(JwtAuthGuird)
   @Get('me')
   me(@Req() req: any) {
-    console.log('Current user:', req.user);
     return req.user;
   }
 

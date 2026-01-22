@@ -16,7 +16,7 @@ export class SupplierPayment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'date', name: 'payment_date' })
+  @Column({ name: 'payment_date' })
   payment_date: Date;
 
   @Column({ type: 'decimal', precision: 12, scale: 2 })
@@ -24,9 +24,6 @@ export class SupplierPayment {
 
   @Column({ type: 'uuid', name: 'payment_method_id', nullable: true })
   payment_method_id: string | null;
-
-  @Column({ type: 'varchar', length: 100, name: 'reference_number' })
-  reference_number: string;
 
   @Column({
     type: 'enum',
@@ -44,7 +41,11 @@ export class SupplierPayment {
   @JoinColumn({ name: 'supplier_id' })
   supplier: Supplier;
 
-  @ManyToOne(() => PurchaseOrder, { nullable: true })
+  @ManyToOne(
+    () => PurchaseOrder,
+    (purchaseOrder) => purchaseOrder.supplierPayments,
+    { nullable: true },
+  )
   @JoinColumn({ name: 'purchase_order_id' })
   purchaseOrder: PurchaseOrder;
 }

@@ -20,7 +20,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req) => {
-          console.log(`Extracting JWT from cookie`);
           return req?.cookies?.access_token;
         },
       ]),
@@ -29,7 +28,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   validate(payload: any) {
-    // console.log('JWT validated:', payload);
     return {
       userId: payload.sub,
       role: payload.role,

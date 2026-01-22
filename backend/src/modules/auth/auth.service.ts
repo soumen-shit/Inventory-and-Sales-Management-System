@@ -20,7 +20,6 @@ export class AuthService {
   ) {}
 
   async signupAdmin(signupDto: SignupAdminDto) {
-    console.log('Signup Admin called');
     const adminRole = await this.roleRepo.findOne({
       where: {
         name: 'ADMIN',
@@ -51,13 +50,10 @@ export class AuthService {
     });
 
     await this.userRepo.save(user);
-    console.log('Admin created');
     return user;
   }
 
   async signin(signinDto: signinDto) {
-    console.log('Signin attempt');
-
     const user = await this.userRepo.findOne({
       where: {
         email: signinDto.email,
@@ -68,8 +64,6 @@ export class AuthService {
     if (!user) {
       throw new ForbiddenException('Invalid credentials');
     }
-
-    console.log(user);
 
     const isMatch = await comparePassword(signinDto.password, user.password);
 
@@ -84,7 +78,6 @@ export class AuthService {
     };
 
     const token = this.jwtService.sign(payload);
-    console.log('JWT generated');
     return { token };
   }
 
@@ -98,7 +91,6 @@ export class AuthService {
     if (!user) {
       throw new ForbiddenException('Invalid credentials');
     }
-    console.log(user);
 
     const isMatch = await comparePassword(
       changePasswordDto.oldPassword,
@@ -113,7 +105,6 @@ export class AuthService {
 
     await this.userRepo.save(user);
 
-    console.log(user);
     return { message: 'Password changed successfully' };
   }
 }

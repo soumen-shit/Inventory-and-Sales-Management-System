@@ -1,20 +1,17 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api } from '../axios';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { api } from "../axios";
 
 export interface SupplierPayment {
   id: string;
-  payment_number: string;
-  purchase_order_id: string;
-  supplier_id: string;
+  amount: number;
   supplier?: {
     id: string;
     name: string;
   };
-  amount: number;
-  payment_method: string;
+  payment_method: string | null;
   payment_date: string;
-  status: string;
-  purchase_order?: {
+  status: "PENDING" | "SUCCESS" | "FAILED";
+  purchaseOrder?: {
     id: string;
     order_number: string;
   };
@@ -44,11 +41,11 @@ export const useSupplierPayments = (params?: {
   to_date?: string;
 }) => {
   return useQuery({
-    queryKey: ['supplier-payments', params],
+    queryKey: ["supplier-payments", params],
     queryFn: async () => {
       const { data } = await api.get<SupplierPaymentsResponse>(
-        '/supplier-payments',
-        { params }
+        "/supplier-payments",
+        { params },
       );
       return data;
     },
@@ -57,10 +54,10 @@ export const useSupplierPayments = (params?: {
 
 export const useSupplierPayment = (id: string) => {
   return useQuery({
-    queryKey: ['supplier-payments', id],
+    queryKey: ["supplier-payments", id],
     queryFn: async () => {
       const { data } = await api.get<SupplierPayment>(
-        `/supplier-payments/${id}`
+        `/supplier-payments/${id}`,
       );
       return data;
     },
@@ -72,9 +69,9 @@ export const useCreateSupplierPayment = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: CreateSupplierPaymentDto) =>
-      api.post<SupplierPayment>('/supplier-payments', data),
+      api.post<SupplierPayment>("/supplier-payments", data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['supplier-payments'] });
+      queryClient.invalidateQueries({ queryKey: ["supplier-payments"] });
     },
   });
 };
@@ -85,17 +82,17 @@ export const useUpdateSupplierPaymentStatus = () => {
     mutationFn: ({ id, status }: { id: string; status: string }) =>
       api.patch(`/supplier-payments/${id}/status`, { status }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['supplier-payments'] });
+      queryClient.invalidateQueries({ queryKey: ["supplier-payments"] });
     },
   });
 };
 
 export const useSupplierPaymentsBySupplier = (supplierId: string) => {
   return useQuery({
-    queryKey: ['supplier-payments', 'supplier', supplierId],
+    queryKey: ["supplier-payments", "supplier", supplierId],
     queryFn: async () => {
       const { data } = await api.get<SupplierPayment[]>(
-        `/suppliers/${supplierId}/payments`
+        `/suppliers/${supplierId}/payments`,
       );
       return data;
     },
@@ -105,10 +102,10 @@ export const useSupplierPaymentsBySupplier = (supplierId: string) => {
 
 export const useSupplierPaymentsByPurchaseOrder = (poId: string) => {
   return useQuery({
-    queryKey: ['supplier-payments', 'purchase-order', poId],
+    queryKey: ["supplier-payments", "purchase-order", poId],
     queryFn: async () => {
       const { data } = await api.get<SupplierPayment[]>(
-        `/purchase-orders/${poId}/payments`
+        `/purchase-orders/${poId}/payments`,
       );
       return data;
     },

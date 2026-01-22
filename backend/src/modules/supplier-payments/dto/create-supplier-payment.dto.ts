@@ -4,7 +4,6 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsString,
   IsUUID,
 } from 'class-validator';
 import { SupplierPaymentStatus } from 'src/enums/supplier-payment-status.enum';
@@ -23,18 +22,13 @@ export class CreateSupplierPaymentDto {
   payment_date: string;
 
   @IsNumber()
-  @IsNotEmpty()
   amount: number;
 
   @IsUUID()
   @IsOptional()
   payment_method_id?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  reference_number: string;
-
   @IsEnum(SupplierPaymentStatus)
-  @IsNotEmpty()
+  @IsOptional()
   status: SupplierPaymentStatus;
 }
