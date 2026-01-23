@@ -49,7 +49,7 @@ export class SalesOrdersController {
   }
 
   @Get()
-  @Roles('ADMIN', 'MANAGER')
+  @Roles('ADMIN', 'MANAGER', 'STAFF')
   findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,

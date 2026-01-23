@@ -4,6 +4,7 @@ import {
   IsString,
   MinLength,
   Matches,
+  IsStrongPassword,
 } from 'class-validator';
 
 export class SignupAdminDto {
@@ -16,6 +17,12 @@ export class SignupAdminDto {
 
   @IsString()
   @MinLength(6)
+  @IsStrongPassword({
+    minLength: 6,
+    minLowercase: 1,
+    minUppercase: 1,
+    minNumbers: 1,
+  })
   password: string;
 
   @IsString()

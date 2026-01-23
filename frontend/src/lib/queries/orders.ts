@@ -37,7 +37,7 @@ export interface SalesOrder {
   status: string;
   total_amount: number;
   order_date: string;
-  items?: SalesOrderItem[];
+  orderItems?: SalesOrderItem[];
   created_by?: string;
 }
 
@@ -47,7 +47,7 @@ export interface SalesOrderItem {
   variant?: any;
   quantity: number;
   unit_price: number;
-  total: number;
+  total_price: number;
 }
 
 export interface OrdersResponse<T> {

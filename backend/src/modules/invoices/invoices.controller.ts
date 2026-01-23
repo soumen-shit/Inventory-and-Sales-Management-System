@@ -3,8 +3,10 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { InvoicesService } from './invoices.service';
@@ -13,6 +15,8 @@ import { JwtAuthGuird } from 'src/common/guards/jwt.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorator/roles.decorator';
 import { PaymentsService } from '../payments/payments.service';
+import { UpdateInvoiceStatusDto } from './dto/update-invoice-status.dto';
+import type { Response } from 'express';
 
 @Controller('invoices')
 @UseGuards(JwtAuthGuird, RolesGuard)
@@ -54,13 +58,30 @@ export class InvoicesController {
 
   @Get(':id/pdf')
   @Roles('ADMIN', 'MANAGER', 'STAFF')
-  generatePDF(@Param('id') id: string) {
-    return this.invoicesService.generatePDF(id);
+  async generatePDF(@Param('id') id: string, @Res() res: Response) {
+    const stream = await this.invoicesService.generatePDF(id);
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename=invoice-${id}.pdf`,
+    );
+
+    stream.pipe(res);
   }
 
   @Get(':invoiceId/payments')
   @Roles('ADMIN', 'MANAGER', 'STAFF')
   getPaymentsByInvoice(@Param('invoiceId') invoiceId: string) {
     return this.paymentsService.findByInvoice(invoiceId);
+  }
+
+  @Patch(':id/status')
+  @Roles('ADMIN', 'MANAGER')
+  updateStatus(
+    @Param('id') id: string,
+    @Body() updateInvoiceStatusDto: UpdateInvoiceStatusDto,
+  ) {
+    return this.invoicesService.updateStatus(id, updateInvoiceStatusDto.status);
   }
 }

@@ -51,9 +51,7 @@ export class ReturnsService {
     );
 
     if (!orderItem) {
-      throw new BadRequestException(
-        'Product variant not found in sales order',
-      );
+      throw new BadRequestException('Product variant not found in sales order');
     }
 
     // Check if return quantity exceeds ordered quantity
@@ -148,12 +146,7 @@ export class ReturnsService {
   async findOne(id: string) {
     const returnOrder = await this.returnRepo.findOne({
       where: { id },
-      relations: [
-        'salesOrder',
-        'salesOrder.customer',
-        'variant',
-        'refund',
-      ],
+      relations: ['salesOrder', 'salesOrder.customer', 'variant', 'refund'],
     });
 
     if (!returnOrder) {

@@ -1,4 +1,3 @@
-/* eslint-disable prefer-const */
 import {
   BadRequestException,
   Injectable,
@@ -65,12 +64,13 @@ export class SalesOrdersService {
   ) {
     const salesOrder = await this.salesOrderRepo.findOne({
       where: { id: soId },
-      relations: ['orderItems'],
     });
 
     if (!salesOrder) {
       throw new NotFoundException('Sales order not found');
     }
+
+    // return salesOrder;
 
     if (salesOrder.status === 'DELIVERED') {
       throw new BadRequestException(
@@ -88,6 +88,8 @@ export class SalesOrdersService {
       where: { id: createSalesOrderItemDto.product_variant_id },
       relations: ['inventory'],
     });
+
+    // return productVariant;
 
     if (!productVariant) {
       throw new NotFoundException('Product variant not found');
@@ -223,113 +225,100 @@ export class SalesOrdersService {
       throw new NotFoundException('Sales order not found');
     }
 
-    if (salesOrder.status === 'CANCELLED' && status !== 'CANCELLED') {
+    if (salesOrder.status === 'CANCELLED') {
       throw new BadRequestException(
         'Cannot change status of a cancelled sales order',
       );
     }
 
-    if (status === 'DELIVERED') {
-      if (salesOrder.status === 'DELIVERED') {
-        throw new BadRequestException('Sales order already delivered');
-      }
+    if (status !== 'DELIVERED') {
+      salesOrder.status = status;
+      await this.salesOrderRepo.save(salesOrder);
+      return this.findOne(id);
+    }
 
-      if (salesOrder.orderItems.length === 0) {
-        throw new BadRequestException(
-          'Cannot deliver sales order without items',
-        );
-      }
+    if (salesOrder.status === 'DELIVERED') {
+      throw new BadRequestException('Sales order already delivered');
+    }
 
-      // Use transaction for data consistency
-      const queryRunner = this.dataSource.createQueryRunner();
-      await queryRunner.connect();
-      await queryRunner.startTransaction();
+    if (salesOrder.orderItems.length === 0) {
+      throw new BadRequestException('Cannot deliver sales order without items');
+    }
 
-      try {
-        // Process each item in the sales order (FIFO batch deduction)
-        for (const item of salesOrder.orderItems) {
-          const variant = item.variant;
-          let remainingQuantity = item.quantity;
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-          // Get batches for this variant sorted by created_at (FIFO)
-          const batches = await queryRunner.manager.find(Batch, {
-            where: { variant: { id: variant.id } },
-            order: { created_at: 'ASC' },
-          });
+    try {
+      for (const item of salesOrder.orderItems) {
+        const variant = item.variant;
+        let remainingQty = item.quantity;
 
-          let totalDeducted = 0;
+        const batches = await queryRunner.manager.find(Batch, {
+          where: { variant: { id: variant.id } },
+          order: { created_at: 'ASC' }, // FIFO
+        });
 
-          // Deduct from batches using FIFO
-          for (const batch of batches) {
-            if (remainingQuantity <= 0) break;
+        let totalDeducted = 0;
 
-            const deductAmount = Math.min(remainingQuantity, batch.quantity);
+        for (const batch of batches) {
+          if (remainingQty <= 0) break;
 
-            if (deductAmount > 0) {
-              // Create inventory movement (OUT)
-              const inventoryMovement = this.inventoryMovementRepo.create({
-                movement_type: InventoryReferenceType.SALES_ORDER,
-                quantity: -deductAmount,
-                reference_type: 'SALES_ORDER',
-                reference_id: salesOrder.id,
-                remarks: `Sales order delivered - Deducted from batch: ${batch.batch_number}`,
-                batch: batch,
-                variant: variant,
-              });
+          const deductQty = Math.min(remainingQty, batch.quantity);
 
-              await queryRunner.manager.save(inventoryMovement);
+          if (deductQty > 0) {
+            const movement = this.inventoryMovementRepo.create({
+              movement_type: InventoryReferenceType.SALES_ORDER,
+              quantity: deductQty,
+              reference_type: 'SALES_ORDER',
+              reference_id: salesOrder.id,
+              remarks: `Sales delivered | Batch ${batch.batch_number}`,
+              batch,
+              variant,
+            });
 
-              // Update batch quantity
-              batch.quantity -= deductAmount;
-              if (batch.quantity === 0) {
-                await queryRunner.manager.remove(batch);
-              } else {
-                await queryRunner.manager.save(batch);
-              }
+            await queryRunner.manager.save(movement);
 
-              totalDeducted += deductAmount;
-              remainingQuantity -= deductAmount;
-            }
-          }
+            batch.quantity -= deductQty;
+            await queryRunner.manager.save(batch);
 
-          if (remainingQuantity > 0) {
-            throw new BadRequestException(
-              `Insufficient stock for variant ${variant.variant_name}. Remaining: ${remainingQuantity}`,
-            );
-          }
-
-          // Update inventory quantity
-          let inventory = await queryRunner.manager.findOne(Inventory, {
-            where: { variant: { id: variant.id } },
-            relations: ['variant'],
-          });
-
-          if (inventory) {
-            inventory.quantity -= totalDeducted;
-            await queryRunner.manager.save(inventory);
+            remainingQty -= deductQty;
+            totalDeducted += deductQty;
           }
         }
 
-        // Update sales order status
-        salesOrder.status = 'DELIVERED';
-        await queryRunner.manager.save(salesOrder);
+        if (remainingQty > 0) {
+          throw new BadRequestException(
+            `Insufficient stock for variant ${variant.variant_name}`,
+          );
+        }
 
-        await queryRunner.commitTransaction();
-      } catch (error) {
-        await queryRunner.rollbackTransaction();
-        const errorMessage =
-          error instanceof Error ? error.message : 'Unknown error';
-        throw new BadRequestException(
-          `Failed to process sales order: ${errorMessage}`,
-        );
-      } finally {
-        await queryRunner.release();
+        const inventory = await queryRunner.manager.findOne(Inventory, {
+          where: { variant: { id: variant.id } },
+        });
+
+        if (!inventory || inventory.quantity < totalDeducted) {
+          throw new BadRequestException(
+            `Inventory mismatch for ${variant.variant_name}`,
+          );
+        }
+
+        inventory.quantity -= totalDeducted;
+        await queryRunner.manager.save(inventory);
       }
-    } else {
-      salesOrder.status = status;
-      await this.salesOrderRepo.save(salesOrder);
-    }
 
-    return this.findOne(id);
+      salesOrder.status = 'DELIVERED';
+      await queryRunner.manager.save(salesOrder);
+
+      await queryRunner.commitTransaction();
+      return this.findOne(id);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new BadRequestException(
+        `Failed to process sales order: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

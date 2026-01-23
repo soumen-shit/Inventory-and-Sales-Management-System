@@ -4,7 +4,6 @@ import {
   AccountBalance,
   AccountCircle,
   Assignment,
-  AttachMoney,
   Category,
   Dashboard,
   Inventory,
@@ -48,24 +47,24 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   { text: "Dashboard", icon: <Dashboard />, path: "/" },
+  { text: "Users", icon: <Person />, path: "/users" },
   { text: "Customers", icon: <People />, path: "/customers" },
-  { text: "Products", icon: <ProductionQuantityLimits />, path: "/products" },
   { text: "Categories", icon: <Category />, path: "/categories" },
+  { text: "Products", icon: <ProductionQuantityLimits />, path: "/products" },
   { text: "Variants", icon: <Store />, path: "/variants" },
   { text: "Inventory", icon: <Inventory />, path: "/inventory" },
   { text: "Suppliers", icon: <LocalShipping />, path: "/suppliers" },
-  { text: "Purchase Orders", icon: <ShoppingCart />, path: "/purchase-orders" },
-  { text: "Sales Orders", icon: <Receipt />, path: "/sales-orders" },
-  { text: "Invoices", icon: <Assignment />, path: "/invoices" },
-  { text: "Payments", icon: <AttachMoney />, path: "/payments" },
   {
     text: "Supplier Payments",
     icon: <AccountBalance />,
     path: "/supplier-payments",
   },
+  { text: "Purchase Orders", icon: <ShoppingCart />, path: "/purchase-orders" },
+  { text: "Sales Orders", icon: <Receipt />, path: "/sales-orders" },
+  { text: "Invoices", icon: <Assignment />, path: "/invoices" },
+
   { text: "Returns", icon: <Refresh />, path: "/returns" },
-  { text: "Refunds", icon: <AccountBalance />, path: "/refunds" },
-  { text: "Users", icon: <Person />, path: "/users" },
+  // { text: "Refunds", icon: <AccountBalance />, path: "/refunds" },
 ];
 
 const Layout = ({ children }: { children: ReactNode }) => {
@@ -134,7 +133,14 @@ const Layout = ({ children }: { children: ReactNode }) => {
                   },
                 }}
               >
-                <ListItemIcon />
+                <ListItemIcon
+                  sx={{
+                    color: isActive ? "white" : "inherit",
+                    minWidth: 40,
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
                 <ListItemText primary={item.text} />
               </ListItemButton>
             </ListItem>
