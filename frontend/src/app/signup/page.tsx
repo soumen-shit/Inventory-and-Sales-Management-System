@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
 import { registerUser } from "@/lib/queries/auth";
-import { Button, Paper, TextField } from "@mui/material";
+import { Button, Paper, TextField, Typography } from "@mui/material";
+
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -22,10 +25,14 @@ const Signup = () => {
     },
   });
 
-  const handleSubmit = (e: React.FocusEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     mutate({ name, email, password, phone });
   };
+
+  // 👇 Backend error message extract (same as Signin)
+  const backendMessage =
+    (error as any)?.response?.data?.message || (error as any)?.message || null;
 
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -33,21 +40,42 @@ const Signup = () => {
         <h1 className="text-xl font-bold mb-4 text-center">Admin Register</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4 flex flex-col gap-4">
+          {/* 🔴 BACKEND ERROR MESSAGE */}
+          {backendMessage && (
+            <Typography
+              color="error"
+              variant="body2"
+              sx={{
+                backgroundColor: "#fdecea",
+                border: "1px solid #f5c6cb",
+                borderRadius: 1,
+                p: 1.5,
+              }}
+            >
+              {Array.isArray(backendMessage)
+                ? backendMessage.join(", ")
+                : backendMessage}
+            </Typography>
+          )}
+
           <TextField
             label="Name"
             fullWidth
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
+
           <TextField
             label="Email"
             fullWidth
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
+
           <TextField
             label="Password"
             type="password"
+            fullWidth
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -58,16 +86,22 @@ const Signup = () => {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
           />
-          <Button type="submit" variant="contained" fullWidth>
+
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            disabled={isPending}
+          >
             {isPending ? "Signup..." : "Signup"}
           </Button>
         </form>
-        {error && <p className="text-red-500">Signup failed</p>}
+
         <p className="mt-2">
           Already have account?{" "}
           <Link className="text-blue-600 cursor-pointer" href={"/signin"}>
             LogIn
-          </Link>{" "}
+          </Link>
         </p>
       </Paper>
     </div>

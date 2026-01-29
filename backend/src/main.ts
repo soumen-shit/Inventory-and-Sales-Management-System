@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule);
@@ -21,6 +22,18 @@ async function bootstrap() {
 
     app.use(cookieParser());
     app.setGlobalPrefix('api');
+
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('API')
+      .setVersion('1.0')
+      .addCookieAuth('access_token')
+      .build();
+
+    const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('api-docs', app, swaggerDocument, {
+      swaggerOptions: {},
+    });
+
     await app.listen(process.env.PORT ?? 4000);
   } catch (err) {
     process.exit(1);

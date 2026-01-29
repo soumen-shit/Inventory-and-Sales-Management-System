@@ -71,25 +71,25 @@ export default function ReturnsPage() {
     updateStatus.mutate({ id, status });
   };
 
-  const handleCreateReturn = () => {
-    createReturn.mutate(
-      {
-        sales_order_id: salesOrderId,
-        product_variant_id: variantId,
-        quantity,
-        reason,
-      },
-      {
-        onSuccess: () => {
-          setOpenDialog(false);
-          setSalesOrderId("");
-          setVariantId("");
-          setQuantity(1);
-          setReason("");
-        },
-      },
-    );
-  };
+  // const handleCreateReturn = () => {
+  //   createReturn.mutate(
+  //     {
+  //       sales_order_id: salesOrderId,
+  //       product_variant_id: variantId,
+  //       quantity,
+  //       reason,
+  //     },
+  //     {
+  //       onSuccess: () => {
+  //         setOpenDialog(false);
+  //         setSalesOrderId("");
+  //         setVariantId("");
+  //         setQuantity(1);
+  //         setReason("");
+  //       },
+  //     },
+  //   );
+  // };
 
   return (
     <ProtectedRoute>

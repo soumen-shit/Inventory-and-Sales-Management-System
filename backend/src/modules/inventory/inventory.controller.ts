@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
 import { InventoryService } from './inventory.service';
 import { JwtAuthGuird } from 'src/common/guards/jwt.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -12,6 +12,7 @@ export class InventoryController {
   @Get()
   @Roles('ADMIN', 'MANAGER', 'STAFF')
   async findAllInventory() {
+
     return this.inventoryService.findAllInventory();
   }
 

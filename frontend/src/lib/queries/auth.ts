@@ -40,6 +40,7 @@ export const registerUser = async (data: SignupData) => {
 
 export const fetchMe = async () => {
   const res = await api.get("/auth/me");
+  console.log(res);
   return res.data;
 };
 
